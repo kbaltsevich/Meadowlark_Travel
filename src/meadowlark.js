@@ -2,6 +2,7 @@ const express = require("express");
 const expressHadlebars = require("express-handlebars").create({
   defaultLayout: "main",
 });
+const handlers = require("./lib/handlers");
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -12,25 +13,14 @@ app.set("views", "./src/views");
 
 app.use(express.static(__dirname + "/public"));
 
-app.get("/", (req, res) => {
-  res.render("home");
-});
+app.get("/", handlers.home);
 
-app.get("/about", (req, res) => {
-  res.render("about");
-});
+app.get("/about", handlers.about);
 
 //404
-app.use((req, res) => {
-  res.status(404);
-  res.render("404");
-});
+app.use(handlers.notFount);
 
 //500
-app.use((err, req, res, next) => {
-  console.error(err.message);
-  res.status(500);
-  res.render("500");
-});
+app.use(handlers.serverError);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
